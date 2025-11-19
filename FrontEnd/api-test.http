@@ -1,0 +1,3 @@
+GET http://localhost:5678/api/works
+# GET http://localhost:5678/api/categories
+Accept: application/json
