@@ -226,10 +226,10 @@ nav.filters ul {
 
 nav.filters li {
 	padding: 0;
-	margin: 0 10px;
+	margin: 0 6px;
 }
 
-nav li button {
+.filter-cat {
 	color: #1D6154;
 	display: flex;
 	align-items: center;
@@ -247,15 +247,16 @@ nav li button {
 	font-size: 16px;
 }
 
+.filter-cat:hover {
+	background-color: #1D6154;
+	color: white;
+}
+
 nav li button.active {
 	background-color: #1D6154;
 	color: white;
 }
 
-nav li button:hover {
-	background-color: #1D6154;
-	color: white;
-}
 
 li:hover {
 	color: #B1663C;
@@ -265,7 +266,7 @@ li:hover {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 70px;
+	gap: 80px;
 }
 
 
@@ -276,13 +277,14 @@ li:hover {
 #introduction img {
 	max-width: 474px;
 	max-height: 355px;
-	width: 100%;
-	height: auto;
+	width: 96%;
+	height: 100%;
 	display: block;
 }
 
 #introduction article {
 	max-width: 404px;
+	margin-left: -20px;
 }
 
 #introduction h2 {
@@ -296,9 +298,38 @@ li:hover {
 	line-height: 1.4;
 }
 
+#portfolio {
+	margin-top: 7.5rem;
+}
+
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+}
+
+.hidden {
+	display: none;
+}
+
+.portfolio-header {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.edit-button {
+	height: 30px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	display: flex;
+	align-items: center;
+}
+
+.edit-button img {
+	width: 30px;
+	height: 30px;
+	display: block;
 }
 
 .gallery {
@@ -415,4 +446,103 @@ footer nav ul li {
 	font-family: 'Work Sans';
 	font-size: 16px;
 	font-weight: 300;
+}
+
+.modal {
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal h2 {
+	font-family: 'Work Sans';
+	color: black;
+	font-weight: 400;
+	margin: 18px 0px;
+}
+
+.modal span {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+}
+
+.modal-content {
+	height: 648px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: white;
+	padding: 50px 75px 0;
+	border-radius: 10px;
+	max-width: 630px;
+	position: relative;
+}
+
+.modal-content .close {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	font-size: 30px;
+	cursor: pointer;
+}
+
+
+.modal-gallery {
+	margin: 2rem;
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 10px;
+
+}
+
+.modal-gallery img {
+	width: 76px;
+	height: 102px;
+	margin-bottom: 20px;
+}
+
+.delete-btn {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	background: transparent;
+	color: white;
+	border: none;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.modal hr {
+	border: 1px solid #ccc;
+	width: 420px;
+}
+
+.modal .btnAdd {
+	color: white;
+	min-width: 100px;
+	max-width: 237px;
+	padding: 0.5rem 2rem;
+	border: 1px solid #1D6154;
+	border-radius: 25px;
+	background-color: #1D6154;
+	cursor: pointer;
+	font-family: 'Syne';
+	font-weight: bold;
+	justify-content: center;
+	font-size: 16px;
+	margin-top: 2.3rem;
 }
