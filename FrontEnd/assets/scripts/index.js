@@ -1,11 +1,12 @@
 const gallery = document.querySelector(".gallery");
 const filtersContainer = document.querySelector(".filters ul");
-
+let categoriesCache = [];
 
 function displayWorks(works) {
     gallery.innerHTML = '';
     works.forEach(work => {
         const figure = document.createElement('figure');
+        figure.setAttribute('data-id', work.id);
         figure.innerHTML = `
             <img src="${work.imageUrl}" alt="${work.title}">
             <figcaption>${work.title}</figcaption>
@@ -13,6 +14,7 @@ function displayWorks(works) {
         gallery.appendChild(figure);
     });
 }
+
 
 function showEditButtonIfLogged(works) {
     const token = localStorage.getItem('token');
@@ -22,69 +24,23 @@ function showEditButtonIfLogged(works) {
 
     const btn = document.createElement('button');
     btn.classList.add('edit-button');
-    btn.innerHTML = `<img src="./assets/icons/instagram.png" alt="Modifier">`;
+    btn.innerHTML = `<img src="./assets/icons/modify-icon-black.svg" alt="Modifier"><div> modifier</div>`;
 
     portfolioHeader.appendChild(btn);
 
     btn.addEventListener('click', () => openModal(works));
 }
 
-function openModal(works) {
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
+function applyFilter(works) {
+    const activeBtn = document.querySelector(".filter-cat.active");
+    const filter = activeBtn.dataset.filter;
 
-    const close = document.createElement('span');
-    close.textContent = '×';
-    close.classList.add('close');
-    close.addEventListener('click', () => modal.remove());
+    if (filter === "all") {
+        return displayWorks(works);
+    }
 
-
-
-    const content = document.createElement('div');
-    content.classList.add('modal-content');
-
-    const contentTitle = document.createElement('h2');
-    contentTitle.textContent = 'Galerie photo';
-
-    const gallery = document.createElement('div');
-    gallery.classList.add('modal-gallery');
-
-    works.forEach(work => {
-        const imgWrapper = document.createElement('div');
-        imgWrapper.classList.add('modal-img-wrapper');
-        imgWrapper.style.position = 'relative';
-
-        const img = document.createElement('img');
-        img.src = work.imageUrl;
-        img.alt = work.title;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '×';
-        deleteBtn.classList.add('delete-btn');
-
-        deleteBtn.addEventListener('click', () => {
-            imgWrapper.remove();
-        });
-
-        imgWrapper.appendChild(img);
-        imgWrapper.appendChild(deleteBtn);
-        gallery.appendChild(imgWrapper);
-    });
-
-
-    const hr = document.createElement('hr');
-
-    const btnAdd = document.createElement('button');
-    btnAdd.classList.add('btnAdd');
-    btnAdd.textContent = 'Ajouter une photo';
-
-    content.appendChild(close);
-    content.appendChild(contentTitle);
-    content.appendChild(gallery);
-    content.appendChild(hr);
-    content.appendChild(btnAdd);
-    modal.appendChild(content);
-    document.body.appendChild(modal);
+    const filtered = works.filter(w => w.category.name.toLowerCase() === filter);
+    displayWorks(filtered);
 }
 
 
@@ -97,10 +53,106 @@ async function loadWorks() {
     return data;
 }
 
+async function loadCategories(select) {
+    try {
+        const response = await fetch('http://localhost:5678/api/categories');
+        const categories = await response.json();
+
+        categoriesCache = categories; // Сохраняем в кеш
+
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+
+        return categories;
+    } catch (err) {
+        console.error("Erreur chargement catégories:", err);
+        return [];
+    }
+}
+
+async function submitPhotoForm(form, works) {
+    const modal = document.querySelector('.modal');
+    const headerBar = document.querySelector('.modify-mode-bar');
+    const btnValidate = form.nextElementSibling;
+    const fileInput = form.querySelector("#fileInput");
+
+    if (fileInput.files.length === 0) return;
+
+    const file = fileInput.files[0];
+
+    const formData = new FormData();
+    formData.append('title', form.querySelector("input[name='title']").value);
+    formData.append('image', file);
+    formData.append('category', form.querySelector("select[name='category']").value);
+
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch('http://localhost:5678/api/works', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('Erreur lors de l\'envoi');
+
+        const result = await response.json();
+
+        // API возвращает categoryId, используем его
+        const selectedCategoryId = parseInt(result.categoryId);
+
+
+        // Загружаем категории если кеш пустой
+        if (categoriesCache.length === 0) {
+            const catResponse = await fetch('http://localhost:5678/api/categories');
+            categoriesCache = await catResponse.json();
+        }
+
+        const selectedCategory = categoriesCache.find(cat => cat.id === selectedCategoryId);
+
+        const newWork = {
+            ...result,
+            category: {
+                id: selectedCategoryId,
+                name: selectedCategory ? selectedCategory.name : 'Unknown'
+            }
+        };
+
+        console.log('New work added:', newWork);
+
+        works.push(newWork);
+
+        modal.remove();
+        headerBar.remove();
+
+        applyFilter(works);
+
+        form.reset();
+        const preview = form.querySelector("#imagePreview");
+        preview.src = "./assets/images/placeholder.svg";
+        preview.classList.remove("image-preview");
+        preview.classList.add("image-placeholder");
+        form.querySelector("#btnBrowse").classList.remove("hidden");
+        form.querySelector(".file-info").classList.remove("hidden");
+        validateFormFields(form, btnValidate);
+
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+
+
+
 async function init() {
     const works = await loadWorks();
     const categories = new Set(works.map(w => w.category.name));
-    // console.log(categories);
 
     // Buttons
     const allBtn = document.createElement('li');
@@ -119,19 +171,12 @@ async function init() {
         btn.addEventListener("click", () => {
             filterButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
-
-            const filter = btn.dataset.filter;
-
-            if (filter === "all") {
-                displayWorks(works);
-            } else {
-                displayWorks(works.filter(w => w.category.name.toLowerCase() === filter));
-            }
+            applyFilter(works);
         });
     });
+
     displayWorks(works);
     showEditButtonIfLogged(works);
-
 }
 
 
