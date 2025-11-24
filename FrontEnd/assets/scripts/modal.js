@@ -1,7 +1,10 @@
 // ===== MAIN MODAL ENTRY =====
 
 function openModal(works) {
-    // Создаём headerBar один раз
+    // edit-mode to body for modal header bar
+    document.body.classList.add('edit-mode');
+
+    const header = document.querySelector('header');
     const headerBar = document.createElement('div');
     headerBar.classList.add('modify-mode-bar');
 
@@ -13,9 +16,9 @@ function openModal(works) {
 
     headerBar.appendChild(icon);
     headerBar.appendChild(text);
-    document.body.appendChild(headerBar);
 
-    // Создаём модалку один раз
+    header.parentElement.insertBefore(headerBar, header);
+
     const modal = document.createElement('div');
     modal.classList.add('modal');
     document.body.appendChild(modal);
@@ -30,18 +33,18 @@ function openModal(works) {
     content.appendChild(inner);
     modal.appendChild(content);
 
-    // Крестик закрытия
     const closeBtn = createCloseButton(() => {
         modal.remove();
         headerBar.remove();
+        document.body.classList.remove('edit-mode');
     });
     topBar.appendChild(closeBtn);
 
-    // Закрытие по фону
     modal.addEventListener('click', e => {
         if (e.target === modal) {
             modal.remove();
             headerBar.remove();
+            document.body.classList.remove('edit-mode');
         }
     });
 
@@ -193,7 +196,11 @@ function createValidateButton(onClick) {
 function renderModalView(view, container, works, topBar) {
     topBar.innerHTML = "";
     container.innerHTML = "";
-    const closeBtn = createCloseButton(() => { document.querySelector('.modal').remove(); document.querySelector('.modify-mode-bar').remove() });
+    const closeBtn = createCloseButton(() => {
+        document.querySelector('.modal').remove();
+        document.querySelector('.modify-mode-bar').remove();
+        document.body.classList.remove('edit-mode');
+    });
     topBar.appendChild(closeBtn);
 
     if (view === 1) {
@@ -221,8 +228,9 @@ function renderViewForm(container, works, topBar) {
     const backBtn = document.createElement('span');
     backBtn.classList.add('back');
     backBtn.textContent = "<";
-    backBtn.onclick = () =>
-        renderModalView(1, container, works, topBar);
+    backBtn.addEventListener('click', () =>
+        renderModalView(1, container, works, topBar)
+    );
 
     topBar.insertBefore(backBtn, topBar.firstChild);
 

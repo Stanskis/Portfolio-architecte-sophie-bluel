@@ -556,17 +556,12 @@ footer nav ul li {
 }
 
 
-.modal hr {
-	border: 1px solid #ccc;
-	width: 420px;
-}
-
 .modify-mode-bar {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 65px;
+	width: 100vw;
+	height: 59px;
 	background-color: black;
 	color: white;
 	display: flex;
@@ -575,8 +570,13 @@ footer nav ul li {
 	font-weight: bold;
 	font-family: 'Work Sans', sans-serif;
 	z-index: 1500;
+	margin: 0;
+	padding: 0;
 }
 
+body.edit-mode {
+	margin-top: 59px;
+}
 
 .modify-mode-icon {
 	background-image: url('./icons/modify-icon.svg');
@@ -590,7 +590,6 @@ footer nav ul li {
 	border: none;
 	margin-right: 8px;
 }
-
 
 .modal .btnAdd {
 	color: white;
