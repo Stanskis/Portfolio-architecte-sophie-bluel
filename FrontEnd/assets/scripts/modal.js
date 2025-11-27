@@ -42,21 +42,6 @@ function openModal(works) {
 
 // ===== MODAL CORE =====
 
-function createModalOverlay() {
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
-    const headerBar = document.querySelector('.modify-mode-bar');
-
-    modal.addEventListener('click', e => {
-        if (e.target === modal) {
-            headerBar.remove();
-            modal.remove();
-        }
-    });
-
-    return modal;
-}
-
 function createCloseButton(onClick) {
     const btn = document.createElement('span');
     btn.classList.add('close');
