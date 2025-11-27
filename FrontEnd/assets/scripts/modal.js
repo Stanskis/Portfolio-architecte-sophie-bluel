@@ -22,43 +22,23 @@ function openModal(works) {
     const topBar = modal.querySelector('.modal-top-bar');
     const inner = modal.querySelector('.modal-inner');
 
-    const close = () => {
-        modal.remove();
-        headerBar.remove();
-        document.body.classList.remove('edit-mode');
-    };
-
-    const closeBtn = createCloseButton(close);
-    topBar.appendChild(closeBtn);
-
     modal.addEventListener('click', e => {
-        if (e.target === modal) close();
+        if (e.target === modal) {
+            modal.remove();
+            headerBar.remove();
+            document.body.classList.remove('edit-mode')
+        };
     });
 
     renderModalView(1, inner, works, topBar);
 }
-
-
-
-// ===== MODAL CORE =====
-
-function createCloseButton(onClick) {
-    const btn = document.createElement('span');
-    btn.classList.add('close');
-    btn.textContent = '×';
-    btn.addEventListener('click', onClick);
-    return btn;
-}
+// ===== MODAL COMPONENTS =====
 
 function createModalTitle(text) {
     const title = document.createElement('h2');
     title.textContent = text;
     return title;
 }
-
-
-
-// ===== GALLERY VIEW =====
 
 function createGallery(works) {
     const gallery = document.createElement('div');
@@ -113,8 +93,6 @@ function createAddButton(onClick) {
 }
 
 
-// ===== FORM VIEW =====
-
 function createAddPhotoForm() {
     const form = document.createElement('form');
     form.classList.add('modal-form');
@@ -155,6 +133,17 @@ function createValidateButton(onClick) {
     return btn;
 }
 
+function createBackButton(topBar, container, works) {
+    const backBtn = document.createElement('span');
+    backBtn.className = 'back';
+    backBtn.innerHTML = "<img src='./assets/icons/goback.svg' alt='Retour'>";
+    backBtn.addEventListener('click', () =>
+        renderModalView(1, container, works, topBar)
+    );
+    topBar.insertBefore(backBtn, topBar.firstChild);
+}
+
+
 
 
 // ===== VIEW LOGIC (RENDERER) =====
@@ -162,7 +151,11 @@ function createValidateButton(onClick) {
 function renderModalView(view, container, works, topBar) {
     topBar.innerHTML = "";
     container.innerHTML = "";
-    const closeBtn = createCloseButton(() => {
+
+    const closeBtn = document.createElement('span');
+    closeBtn.classList.add('close');
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => {
         document.querySelector('.modal').remove();
         document.querySelector('.modify-mode-bar').remove();
         document.body.classList.remove('edit-mode');
@@ -177,7 +170,7 @@ function renderModalView(view, container, works, topBar) {
         renderViewForm(container, works, topBar);
     }
 }
-
+//----------------------------------
 function renderViewGallery(container, works) {
     const title = createModalTitle("Galerie photo");
     const gallery = createGallery(works);
@@ -191,15 +184,7 @@ function renderViewGallery(container, works) {
 }
 
 function renderViewForm(container, works, topBar) {
-    const backBtn = document.createElement('span');
-    backBtn.classList.add('back');
-    backBtn.innerHTML = "<img src='./assets/icons/goback.svg' alt='Retour'>";
-    backBtn.addEventListener('click', () =>
-        renderModalView(1, container, works, topBar)
-    );
-
-    topBar.insertBefore(backBtn, topBar.firstChild);
-
+    createBackButton(topBar, container, works);
     const title = createModalTitle("Ajout photo");
     const form = createAddPhotoForm();
 

@@ -44,6 +44,13 @@ function handleLogout() {
     location.reload();
 }
 
+function clear() {
+    const modal = document.querySelector('.modal');
+    const headerBar = document.querySelector('.modify-mode-bar');
+    modal.remove();
+    headerBar.remove();
+}
+
 function applyFilter(works) {
     const activeBtn = document.querySelector(".filter-cat.active");
     const filter = activeBtn.dataset.filter;
@@ -68,10 +75,13 @@ async function loadWorks() {
 
 async function loadCategories(select) {
     try {
-        const response = await fetch('http://localhost:5678/api/categories');
-        const categories = await response.json();
+        let categories = categoriesCache;
 
-        categoriesCache = categories;
+        if (!categoriesCache.length) {
+            const response = await fetch('http://localhost:5678/api/categories');
+            categories = await response.json();
+            categoriesCache = categories;
+        }
 
         categories.forEach(cat => {
             const option = document.createElement('option');
@@ -88,8 +98,6 @@ async function loadCategories(select) {
 }
 
 async function submitPhotoForm(form, works) {
-    const modal = document.querySelector('.modal');
-    const headerBar = document.querySelector('.modify-mode-bar');
     const btnValidate = form.nextElementSibling;
     const fileInput = form.querySelector("#fileInput");
 
@@ -119,7 +127,6 @@ async function submitPhotoForm(form, works) {
 
         const selectedCategoryId = parseInt(result.categoryId);
 
-
         if (categoriesCache.length === 0) {
             const catResponse = await fetch('http://localhost:5678/api/categories');
             categoriesCache = await catResponse.json();
@@ -136,15 +143,10 @@ async function submitPhotoForm(form, works) {
         };
 
         console.log('New work added:', newWork);
-
         works.push(newWork);
-
-        modal.remove();
-        headerBar.remove();
-
+        clear();
         applyFilter(works);
 
-        form.reset();
         const preview = form.querySelector("#imagePreview");
         preview.src = "./assets/images/placeholder.svg";
         preview.classList.remove("image-preview");
