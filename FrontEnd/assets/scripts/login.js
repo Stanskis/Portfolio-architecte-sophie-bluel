@@ -1,5 +1,6 @@
 const form = document.querySelector('#login form');
 
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = form.email.value;

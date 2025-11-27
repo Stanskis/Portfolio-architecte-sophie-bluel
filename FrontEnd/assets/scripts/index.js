@@ -16,15 +16,18 @@ function displayWorks(works) {
 }
 
 
-function showEditButtonIfLogged(works) {
+function showIfLogged(works) {
     const token = localStorage.getItem('token');
     const portfolioHeader = document.querySelector('.portfolio-header');
+    const loginLink = document.querySelector('header nav ul li a[href="./login.html"]');
+
 
     if (!token) return;
 
     const btn = document.createElement('button');
     btn.classList.add('edit-button');
     btn.innerHTML = `<img src="./assets/icons/modify-icon-black.svg" alt="Modifier"><div> modifier</div>`;
+    loginLink.textContent = 'logout';
 
     portfolioHeader.appendChild(btn);
 
@@ -176,7 +179,7 @@ async function init() {
     });
 
     displayWorks(works);
-    showEditButtonIfLogged(works);
+    showIfLogged(works);
 }
 
 
