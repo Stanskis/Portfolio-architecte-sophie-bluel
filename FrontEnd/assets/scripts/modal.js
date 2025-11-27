@@ -1,46 +1,38 @@
 // ===== MAIN MODAL ENTRY =====
 
 function openModal(works) {
-    // edit-mode to body for modal header bar
     document.body.classList.add('edit-mode');
 
     const header = document.querySelector('header');
     const headerBar = document.createElement('div');
-    headerBar.classList.add('modify-mode-bar');
-    headerBar.innerHTML = `
-        <span class="modify-mode-icon"></span>
-        <span>Mode édition</span>
-    `;
-
+    headerBar.className = 'modify-mode-bar';
+    headerBar.innerHTML = `<span class="modify-mode-icon"></span><span>Mode édition</span>`;
     header.before(headerBar);
 
     const modal = document.createElement('div');
-    modal.classList.add('modal');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-top-bar"></div>
+            <div class="modal-inner"></div>
+        </div>
+    `;
     document.body.appendChild(modal);
 
-    const content = createModalContent();
-    const topBar = document.createElement('div');
-    topBar.classList.add('modal-top-bar');
-    const inner = document.createElement('div');
-    inner.classList.add('modal-inner');
+    const topBar = modal.querySelector('.modal-top-bar');
+    const inner = modal.querySelector('.modal-inner');
 
-    content.appendChild(topBar);
-    content.appendChild(inner);
-    modal.appendChild(content);
-
-    const closeBtn = createCloseButton(() => {
+    const close = () => {
         modal.remove();
         headerBar.remove();
         document.body.classList.remove('edit-mode');
-    });
+    };
+
+    const closeBtn = createCloseButton(close);
     topBar.appendChild(closeBtn);
 
     modal.addEventListener('click', e => {
-        if (e.target === modal) {
-            modal.remove();
-            headerBar.remove();
-            document.body.classList.remove('edit-mode');
-        }
+        if (e.target === modal) close();
     });
 
     renderModalView(1, inner, works, topBar);
@@ -63,12 +55,6 @@ function createModalOverlay() {
     });
 
     return modal;
-}
-
-function createModalContent() {
-    const content = document.createElement('div');
-    content.classList.add('modal-content');
-    return content;
 }
 
 function createCloseButton(onClick) {
