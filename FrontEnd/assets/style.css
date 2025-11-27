@@ -471,8 +471,8 @@ footer nav ul li {
 
 .modal-content .close {
 	position: absolute;
-	top: 30px;
-	right: 30px;
+	top: 25px;
+	right: 40px;
 	font-size: 30px;
 	cursor: pointer;
 }

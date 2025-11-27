@@ -193,7 +193,7 @@ function renderViewGallery(container, works) {
 function renderViewForm(container, works, topBar) {
     const backBtn = document.createElement('span');
     backBtn.classList.add('back');
-    backBtn.textContent = "<";
+    backBtn.innerHTML = "<img src='./assets/icons/goback.svg' alt='Retour'>";
     backBtn.addEventListener('click', () =>
         renderModalView(1, container, works, topBar)
     );
