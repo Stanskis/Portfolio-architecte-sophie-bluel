@@ -7,17 +7,12 @@ function openModal(works) {
     const header = document.querySelector('header');
     const headerBar = document.createElement('div');
     headerBar.classList.add('modify-mode-bar');
+    headerBar.innerHTML = `
+        <span class="modify-mode-icon"></span>
+        <span>Mode édition</span>
+    `;
 
-    const icon = document.createElement('span');
-    icon.classList.add('modify-mode-icon');
-
-    const text = document.createElement('span');
-    text.textContent = "Mode édition";
-
-    headerBar.appendChild(icon);
-    headerBar.appendChild(text);
-
-    header.parentElement.insertBefore(headerBar, header);
+    header.before(headerBar);
 
     const modal = document.createElement('div');
     modal.classList.add('modal');
