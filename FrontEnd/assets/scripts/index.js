@@ -40,7 +40,7 @@ function showIfLogged(works) {
 }
 
 function handleLogout() {
-    localStorage.clear();
+    localStorage.removeItem('token');
     location.reload();
 }
 
