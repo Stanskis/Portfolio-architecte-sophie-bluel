@@ -117,11 +117,9 @@ async function submitPhotoForm(form, works) {
 
         const result = await response.json();
 
-        // API возвращает categoryId, используем его
         const selectedCategoryId = parseInt(result.categoryId);
 
 
-        // Загружаем категории если кеш пустой
         if (categoriesCache.length === 0) {
             const catResponse = await fetch('http://localhost:5678/api/categories');
             categoriesCache = await catResponse.json();
