@@ -71,7 +71,7 @@ async function loadCategories(select) {
         const response = await fetch('http://localhost:5678/api/categories');
         const categories = await response.json();
 
-        categoriesCache = categories; // Сохраняем в кеш
+        categoriesCache = categories;
 
         categories.forEach(cat => {
             const option = document.createElement('option');
