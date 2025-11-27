@@ -27,11 +27,21 @@ function showIfLogged(works) {
     const btn = document.createElement('button');
     btn.classList.add('edit-button');
     btn.innerHTML = `<img src="./assets/icons/modify-icon-black.svg" alt="Modifier"><div> modifier</div>`;
+
     loginLink.textContent = 'logout';
+    loginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLogout();
+    });
 
     portfolioHeader.appendChild(btn);
 
     btn.addEventListener('click', () => openModal(works));
+}
+
+function handleLogout() {
+    localStorage.clear();
+    location.reload();
 }
 
 function applyFilter(works) {
